@@ -13,6 +13,8 @@ import com.api.crud.repositorys.UserRepository;
 import com.api.crud.services.exceptions.DataBaseException;
 import com.api.crud.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class UserService {
 
@@ -43,9 +45,13 @@ public class UserService {
 	}
 	
 	public User upDate(Long id, User obj) {
+		try {
 		User entity =  repository.getReferenceById(id);
 		upDateData(entity, obj);
 		return repository.save(entity);
+		} catch (EntityNotFoundException exception) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 
 	private void upDateData(User entity, User obj) {	
